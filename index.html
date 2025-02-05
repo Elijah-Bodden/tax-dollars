@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Government Spending Receipt</title>
+  <style>
+    /* Updated receipt styling */
+    body {
+      font-family: Arial, sans-serif;
+      background: aliceblue;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      font-size: 16px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px 25px;
+      border: 1px dashed #aaa;
+      position: relative;
+    }
+    .header {
+      text-align: center;
+      /* border-bottom: 1px dashed #aaa; */
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+    }
+    .header img {
+      display: block;
+      margin: 0 auto 10px;
+      width: 100px;
+      height: auto;
+    }
+    h1, h2 {
+      margin: 8px 0;
+      letter-spacing: 1px;
+    }
+    .input-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 600px; /* Same width as the container */
+      margin: 0 auto 20px;
+      padding: 12px 0;
+      /* border-bottom: 1px dashed #aaa; */
+    }
+    .input-container label {
+      margin-right: 8px;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+    .input-container #earningsValue {
+      margin-right: 15px;
+      font-weight: bold;
+    }
+    .input-container input[type="range"] {
+      flex-grow: 1;
+      height: 25px;
+    }
+    .receipt {
+      position: relative;
+    }
+    .receipt h2 {
+      text-align: center;
+      margin: 15px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    /* Set first column width to 25% */
+    table colgroup col:first-child {
+      width: 25%;
+    }
+    th, td {
+      padding: 8px 5px;
+      border-bottom: 1px dashed #aaa;
+      text-align: left;
+    }
+    th {
+      font-weight: bold;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    /* Info icon styling */
+    .info-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      background: #ddd;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .info-box {
+      display: none;
+      position: absolute;
+      top: 40px;
+      right: 10px;
+      width: 250px;
+      background: #fff;
+      border: 1px solid #aaa;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="info-icon" onclick="toggleInfoBox()">i</div>
+    <div class="info-box" id="infoBox">
+      <strong>About this site:</strong>
+      <p>See where your tax money goes. You'll notice that the pentagon budget alone dwarfs all the things Elon Musk has blamed for America's economic problems combined. Could this be the real problem?</p>
+    </div>
+    <div class="header">
+      <img src="federal_govt.png" alt="Icon" />
+      <h1>Thanks for shopping with US!</h1>
+    </div>
+    
+    <div class="input-container">
+      <label for="earningsSlider">Your Yearly Earnings:</label>
+      <span id="earningsValue">$50,000</span>
+      <input type="range" id="earningsSlider" min="0" max="200000" value="50000" step="1000" />
+    </div>
+    
+    <div class="receipt">
+      <table id="receiptTable">
+        <colgroup>
+          <col style="width: 25%;">
+          <col style="width: 37.5%;">
+          <col style="width: 37.5%;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Program</th>
+            <th>Percentage of federal tax</th>
+            <th>Amount you pay yearly</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Receipt rows will be inserted here dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <script>
+    // Function to toggle info box visibility
+    function toggleInfoBox() {
+      const infoBox = document.getElementById('infoBox');
+      infoBox.style.display = infoBox.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Function to format numbers with commas for the thousands place
+    function formatNumber(num) {
+      return num.toLocaleString();
+    }
+
+    // Our spending data
+    const data = [
+      "Enemies of the DOGE:",
+      { program: "Department of Education", percentage: 2.5 },
+      { program: "NIH and CDC", percentage: 1.5 },
+      { program: "Environmental conservation", percentage: 1.5 },
+      { program: "Foreign aid", percentage: 1.0 },
+      { program: "USAID", percentage: 0.5 },
+      { program: "DEI", percentage: 0.5 },
+      "Everything else:",
+      { program: "Social Security", percentage: 19.0 },
+      { program: "Department of Defense", percentage: 14.0 },
+      { program: "Medicare", percentage: 12.0 },
+      { program: "Interest on national debt", percentage: 9.5 },
+      { program: "Medicaid", percentage: 6.0 },
+      { program: "Veterans' benefits", percentage: 4.5 },
+      { program: "Federal employees", percentage: 4.5 },
+      { program: "Infrastructure", percentage: 3.5 },
+      { program: "TANF and poverty aid", percentage: 2.5 },
+      { program: "Homeland security", percentage: 2.5 },
+      { program: "Law enforcement", percentage: 2.5 },
+      { program: "Food Stamps", percentage: 1.5 },
+      { program: "Unemployment", percentage: 1.5 },
+      { program: "Science and technology research", percentage: 1.5 },
+      { program: "Housing assistance", percentage: 1.5 },
+      { program: "Agricultural subsidies", percentage: 1.5 },
+      { program: "Admin and IT", percentage: 1.5 },
+      { program: "Energy programs", percentage: 1.0 },
+      { program: "Economic and community development", percentage: 1.0 },
+      { program: "Judicial and legal services", percentage: 1.0 },
+    ];
+
+    function calculateTax(earnings) {
+      const singleIntervals = [
+        [0, 9875, 0.1],
+        [9875, 40125, 0.12],
+        [40125, 85525, 0.22],
+        [85525, 163300, 0.24],
+        [163300, 207350, 0.32],
+        [207350, 518400, 0.35],
+        [518400, 900000000, 0.37],
+      ];
+
+      let totalTaxes = 0;
+      for (const interval of singleIntervals) {
+        if (earnings < interval[1]) {
+          totalTaxes += (earnings - interval[0]) * interval[2];
+          break;
+        } else {
+          totalTaxes += (interval[1] - interval[0]) * interval[2];
+        }
+      }
+      return totalTaxes;
+    }
+
+    // Function to render the receipt
+    function renderReceipt(earnings) {
+      const taxes = calculateTax(earnings);
+
+      const tableBody = document.querySelector("#receiptTable tbody");
+      tableBody.innerHTML = "";
+
+      let items = data.slice();
+
+      items.forEach(item => {
+        if (typeof item === "string") {
+          // Add a header row for a section
+          const headerRow = document.createElement("tr");
+          headerRow.innerHTML = `<th colspan="3" style="text-align:center; background-color: #f4f4f4;">${item}</th>`;
+          tableBody.appendChild(headerRow);
+        } else {
+          const amount = (taxes * (item.percentage / 100)).toFixed(2);
+          const row = document.createElement("tr");
+          row.innerHTML = `<td>${item.program}</td><td>${item.percentage}%</td><td>$${amount}</td>`;
+          tableBody.appendChild(row);
+        }
+      });
+      
+      // Add the subtotal row
+      const spacerRow = document.createElement("tr");
+      spacerRow.innerHTML = `<td colspan="3" style="text-align: right;">&nbsp;</td>`;
+      tableBody.appendChild(spacerRow);
+      const subtotalRow = document.createElement("tr");
+      subtotalRow.innerHTML = `<td colspan="2" style="text-align: right;">Subtotal</td><td style="font-weight: bold;">$${formatNumber(taxes.toFixed(2))}</td>`;
+      tableBody.appendChild(subtotalRow);
+    }
+
+    // Automatically update on earningsSlider change
+    document.getElementById("earningsSlider").addEventListener("input", function() {
+      const earnings = parseFloat(this.value) || 0;
+      document.getElementById("earningsValue").textContent = `$${formatNumber(earnings)}`;
+      renderReceipt(earnings);
+    });
+
+    // Render default view on page load
+    document.addEventListener("DOMContentLoaded", function() {
+      const earnings = parseFloat(document.getElementById("earningsSlider").value) || 0;
+      document.getElementById("earningsValue").textContent = `$${formatNumber(earnings)}`;
+      renderReceipt(earnings);
+    });
+  </script>
+</body>
+</html>
